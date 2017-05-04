@@ -40,7 +40,7 @@ int main()
 	///width and height of the output
 	int width = 500; int height = 500;
 	///number of threads - use whatever your machine has
-	int numThreads = 12;
+	int numThreads = 8;
 	///number of x and y division of a pixel - each pixel will be divided into x*y equal rectangles and for each rectangle a sample will be taken
 	int pixelDivisionsX = 10;
 	int pixelDivisionsY = 10;
