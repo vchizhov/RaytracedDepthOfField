@@ -1,0 +1,7 @@
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.ppm
+/.vs
+/Debug
+/x64
