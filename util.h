@@ -25,3 +25,4 @@ void uniformDiskSample(float r1, float r2, float& x, float& y)
 	x = r*cosf(phi);
 	y = r*sinf(phi);
 }
+

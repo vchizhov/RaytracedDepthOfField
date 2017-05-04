@@ -16,22 +16,21 @@ public:
 
 	bool intersect(const Ray& r, IntersectionInfo& info) const
 	{
-		Vec3 po = r.origin - position;
-		float pod = dotProduct(po, r.direction);
-		float dd = dotProduct(r.direction, r.direction);
-		float rr = dotProduct(po,po) - radius*radius;
-		float discriminant = pod*pod - dd*rr;
+		Vec3 op = position-r.origin;
+		float opd = dotProduct(op, r.direction);
+		//float dd = dotProduct(r.direction, r.direction); -should equal 1 if r.direction is normalized
+		float discriminant = opd*opd + radius*radius - dotProduct(op, op);
 
 		if (discriminant < 0.0f)
 			return false;
 
 		discriminant = sqrtf(discriminant);
 
-		float t = (-pod + discriminant) / dd;
+		float t = opd + discriminant;
 		if (t > 0.0f)
 			return true;
 
-		t = (-pod - discriminant) / dd;
+		t = opd - discriminant;
 		if (t > 0.0f)
 			return true;
 
