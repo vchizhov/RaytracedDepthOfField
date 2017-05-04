@@ -7,10 +7,13 @@
 #include <iostream>
 #include <string>
 
-
 ///renders the scene using the camera into a rectangle ((0,startIndex), (width, startIndex+dy)) of colorArray
 void render(const Scene& scene, const Camera& camera, ColorArray& colorArray, int startIndex, int dy, int pixelDivisionsX, int pixelDivisionsY)
 {
+	std::mt19937 randomEngine{ rd() };
+
+	std::uniform_real_distribution<float> uniformDistribution{ 0.0, 1.0 };
+
 	Ray tempRay;
 	for (int j = startIndex; j < startIndex+dy; ++j)
 	{
@@ -21,7 +24,7 @@ void render(const Scene& scene, const Camera& camera, ColorArray& colorArray, in
 				for (int k = 0; k < pixelDivisionsX; ++k)
 				{
 
-					if (camera.generateRay((i+(k+random())/float(pixelDivisionsX-1)) / (colorArray.width - 1.0), (colorArray.height - ((l+random())/float(pixelDivisionsY-1) + j)) / (colorArray.height - 1.0), tempRay))
+					if (camera.generateRay(randomEngine, uniformDistribution, (i+(k+random())/float(pixelDivisionsX-1)) / (colorArray.width - 1.0), (colorArray.height - ((l+random())/float(pixelDivisionsY-1) + j)) / (colorArray.height - 1.0), tempRay))
 					{
 						//clr(i,j).set(0.0,0.0,clamp(0.5+0.5*tempRay.direction.y,0.0,1.0));
 						IntersectionInfo info;

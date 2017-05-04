@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <iostream>
 
+#define random() uniformDistribution(randomEngine)
 
 class Camera
 {
@@ -194,13 +195,13 @@ private:
 	}
 
 	///(x,y) in [-1,1]^2
-	void sampleBokehImage(float r1, float r2, float& x, float& y) const
+	void sampleBokehImage(float r1, float r2, float r3, float r4, float& x, float& y) const
 	{
 
 		int row = myUpperBound(bokehImageRowCDF, bokehImage.height, r1);
-		y = 2.0 - 2.0*(random() + row) / float(bokehImage.height - 1);
+		y = 2.0 - 2.0*(r3 + row) / float(bokehImage.height - 1);
 		int column = myUpperBound(&bokehImage(0, row), bokehImage.width, r2);
-		x = 2.0* (random()+column)/ float(bokehImage.width - 1) - 1.0;
+		x = 2.0* (r4+column)/ float(bokehImage.width - 1) - 1.0;
 	}
 
 public:
@@ -270,7 +271,7 @@ public:
 	}
 
 	///generates a ray from the film given screen coordinates(x,y) in [0,1]^2
-	bool generateRay(float x, float y, Ray& ray) const
+	bool generateRay(std::mt19937& randomEngine, std::uniform_real_distribution<float>& uniformDistribution, float x, float y, Ray& ray) const
 	{
 		///everything below is in local camera space:
 
@@ -332,7 +333,7 @@ public:
 			}*/
 
 			///take samples
-			enableImageBasedBokeh ? sampleBokehImage(random(), random(), thinLensPoint.x, thinLensPoint.y) : uniformDiskSample(random(), random(), thinLensPoint.x, thinLensPoint.y);
+			enableImageBasedBokeh ? sampleBokehImage(random(), random(), random(), random(), thinLensPoint.x, thinLensPoint.y) : uniformDiskSample(random(), random(), thinLensPoint.x, thinLensPoint.y);
 			
 			thinLensPoint.x *= apertureRadius;
 			thinLensPoint.y *= apertureRadius;
@@ -344,7 +345,7 @@ public:
 			while (tries < maxTriesVignetting && !empiricalOpticalVignetting(thinLensPoint, rayDirection))
 			{
 				///the ray missed the 2nd aperture - generate a new ray
-				enableImageBasedBokeh ? sampleBokehImage(random(), random(), thinLensPoint.x, thinLensPoint.y) : uniformDiskSample(random(), random(), thinLensPoint.x, thinLensPoint.y);
+				enableImageBasedBokeh ? sampleBokehImage(random(), random(), random(), random(), thinLensPoint.x, thinLensPoint.y) : uniformDiskSample(random(), random(), thinLensPoint.x, thinLensPoint.y);
 				thinLensPoint.x *= apertureRadius;
 				thinLensPoint.y *= apertureRadius;
 				rayDirection = normalize(focusPoint - thinLensPoint);
@@ -359,7 +360,7 @@ public:
 		else
 		{
 			///take samples
-			enableImageBasedBokeh ? sampleBokehImage(random(), random(), thinLensPoint.x, thinLensPoint.y) : uniformDiskSample(random(), random(), thinLensPoint.x, thinLensPoint.y);
+			enableImageBasedBokeh ? sampleBokehImage(random(), random(), random(), random(), thinLensPoint.x, thinLensPoint.y) : uniformDiskSample(random(), random(), thinLensPoint.x, thinLensPoint.y);
 
 			thinLensPoint.x *= apertureRadius;
 			thinLensPoint.y *= apertureRadius;
